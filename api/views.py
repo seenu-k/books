@@ -1,5 +1,3 @@
-from django.http import response
-from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,21 +7,24 @@ from .serializers import BookSerializer, ExternalBookSerializer
 from .models import Book
 
 
-import logging
-logging.basicConfig(level=logging.NOTSET)
-
-# Create your views here.
-
-# class BookView(APIView):
-    
-#     def get(self, request):
-#         books = Book.objects.all()
-#         serializer = BookSerializer(books, many=True)
-#         return Response({'status_code': 200, 'status': 'success', 'data': serializer.data}, status = status.HTTP_200_OK)
-
 class BookView(viewsets.ModelViewSet):
-    queryset = Book.objects.all()
     serializer_class = BookSerializer
+    
+    def get_queryset(self):
+        queryset = Book.objects.all()
+        name = self.request.query_params.get('name')
+        country = self.request.query_params.get('country')
+        publisher = self.request.query_params.get('publisher')
+        release_date = self.request.query_params.get('release_date')
+        if name is not None:
+            queryset = queryset.filter(name=name)
+        if country is not None:
+            queryset = queryset.filter(country=country)
+        if publisher is not None:
+            queryset = queryset.filter(publisher=publisher)
+        if release_date is not None:
+            queryset = queryset.filter(release_date__year=release_date)
+        return queryset
     
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
