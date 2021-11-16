@@ -1,11 +1,3 @@
-# from django.urls import path
-# from .views import BookView, ExternalBookView
-
-# urlpatterns = [
-#     path('v1/books/', BookView.as_view({'get': 'list'})),
-#     path('external-books/', ExternalBookView.as_view()),
-# ]
-
 from django.urls import path, include
 from rest_framework import routers
 from .views import BookView, ExternalBookView
